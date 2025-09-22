@@ -1,0 +1,12 @@
+    "------------------------------------------------------------------
+    " Example Output (Console/ADT):
+    " Record 1 (PERID: 8999) inserted successfully.
+    " Record 2 (PERID: 8990) inserted successfully.
+    " Multiple records (PERID: 8991, 8992) inserted successfully.
+    " If an error occurs, messages will indicate the failed operation.
+
+    "------------------------------------------------------------------
+    " Suggestions for further enhancement:
+    " - Check for duplicate keys before insert
+    " - Generate random sample data using CL_ABAP_RANDOM_INT
+    " - Wrap database operations in TRY...CATCH for error handling
