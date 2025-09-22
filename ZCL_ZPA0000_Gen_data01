@@ -1,0 +1,93 @@
+*----------------------------------------------------------------------
+* Class Definition: ZCL_ZPA0000_Gen_data01
+* Description    : Generates sample data for zpa0000 table
+*----------------------------------------------------------------------
+
+CLASS ZCL_ZPA0000_Gen_data01 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+    " Allows execution from ADT (Eclipse) or SE24
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+CLASS ZCL_ZPA0000_Gen_data01 IMPLEMENTATION.
+
+  METHOD if_oo_adt_classrun~main.
+    " Local work area for single record operations
+    DATA: ls_zpa0000_table TYPE zpa0000.
+
+    "------------------------------------------------------------------
+    " Insert first sample record
+    "------------------------------------------------------------------
+    ls_zpa0000_table-client = sy-mandt. " Set client (important for client-dependent tables)
+    ls_zpa0000_table-name   = 'Name1'.
+    ls_zpa0000_table-age    = 20.
+    ls_zpa0000_table-perid  = '8999'.
+
+    " Attempt to insert record
+    INSERT zpa0000 FROM @ls_zpa0000_table.
+    IF sy-subrc = 0.
+      out->write( |Record 1 (PERID: { ls_zpa0000_table-perid }) inserted successfully.| ).
+    ELSE.
+      out->write( |Error inserting record 1 (PERID: { ls_zpa0000_table-perid })!| ).
+    ENDIF.
+
+    "------------------------------------------------------------------
+    " Insert second sample record
+    "------------------------------------------------------------------
+    ls_zpa0000_table-perid  = '8990'.
+    ls_zpa0000_table-name   = 'Name2'.
+    ls_zpa0000_table-age    = 21.
+
+    INSERT zpa0000 FROM @ls_zpa0000_table.
+    IF sy-subrc = 0.
+      out->write( |Record 2 (PERID: { ls_zpa0000_table-perid }) inserted successfully.| ).
+    ELSE.
+      out->write( |Error inserting record 2 (PERID: { ls_zpa0000_table-perid })!| ).
+    ENDIF.
+
+    "------------------------------------------------------------------
+    " Prepare multiple records for batch insert
+    "------------------------------------------------------------------
+    DATA: lt_zpa0000_table TYPE STANDARD TABLE OF zpa0000,
+          ls_data TYPE zpa0000.
+
+    " Sample record 3
+    ls_data = VALUE zpa0000( client = sy-mandt age = 20 perid = '8991' name = 'Neslin' ).
+    APPEND ls_data TO lt_zpa0000_table.
+
+    " Sample record 4
+    ls_data = VALUE zpa0000( client = sy-mandt age = 22 perid = '8992' name = 'Karthikeyan' ).
+    APPEND ls_data TO lt_zpa0000_table.
+
+    "------------------------------------------------------------------
+    " Batch insert multiple records at once
+    "------------------------------------------------------------------
+    MODIFY zpa0000 FROM TABLE @lt_zpa0000_table.
+    IF sy-subrc = 0.
+      out->write( |Multiple records (PERID: 8991, 8992) inserted successfully.| ).
+    ELSE.
+      out->write( |Error inserting multiple records (PERID: 8991, 8992)!| ).
+    ENDIF.
+
+    "------------------------------------------------------------------
+    " Example Output (Console/ADT):
+    " Record 1 (PERID: 8999) inserted successfully.
+    " Record 2 (PERID: 8990) inserted successfully.
+    " Multiple records (PERID: 8991, 8992) inserted successfully.
+    " If an error occurs, messages will indicate the failed operation.
+
+    "------------------------------------------------------------------
+    " Suggestions for further enhancement:
+    " - Check for duplicate keys before insert
+    " - Generate random sample data using CL_ABAP_RANDOM_INT
+    " - Wrap database operations in TRY...CATCH for error handling
+
+  ENDMETHOD.
+
+ENDCLASS.
